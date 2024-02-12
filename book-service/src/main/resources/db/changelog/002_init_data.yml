@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - changeSet:
+      id: 002_init_data
+      author: suonvicheak@admin.com
+      changes:
+        - loadData:
+            tableName: books
+            columns:
+              - column:
+                  name: id
+                  type: int
+              - column:
+                  name: name
+                  type: varchar
+              - column:
+                  name: author
+                  type: varchar
+              - column:
+                  name: publish_date
+                  type: datetime
+            file: db/data/data.csv

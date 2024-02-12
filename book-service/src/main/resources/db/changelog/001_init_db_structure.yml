@@ -1,0 +1,31 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001_init_db_structure
+      author: suonvicheak@admin.com
+      changes:
+        - createTable:
+            catalogName: books
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: author
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: publish_date
+                  type: datetime
+                  constraints:
+                    nullable: false
+            tableName: books
