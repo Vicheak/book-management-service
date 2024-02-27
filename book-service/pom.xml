@@ -18,6 +18,12 @@
         <spring-cloud.version>2023.0.0</spring-cloud.version>
     </properties>
     <dependencies>
+        <!-- This dependency is used for implementation of message broker -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-bus-amqp</artifactId>
+        </dependency>
+
         <!-- This dependency is used for implementation of AOP concept -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

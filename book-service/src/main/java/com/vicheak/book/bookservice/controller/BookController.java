@@ -5,8 +5,6 @@ import com.vicheak.book.bookservice.dto.BookDto;
 import com.vicheak.book.bookservice.mapper.BookMapper;
 import com.vicheak.book.bookservice.service.BookService;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
-import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
-import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
