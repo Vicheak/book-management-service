@@ -1,0 +1,46 @@
+server:
+  port: 8072
+
+spring:
+  application:
+    name: gatewayserver
+
+  config:
+    import: optional:configserver:http://localhost:8071/
+
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: false
+          lower-case-service-id: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    shutdown:
+      enabled: true
+    health:
+      probes:
+        enabled: true
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
+  info:
+    env:
+      enabled: true
+
+info:
+  app:
+    name: gatewayserver
+    description: provide API gateway service
+    version: 1.0.0
+
+logging:
+  level:
+    com.vicheak.book.gatewayserver: DEBUG

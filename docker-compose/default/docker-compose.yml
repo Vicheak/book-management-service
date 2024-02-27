@@ -1,6 +1,58 @@
 version: "3.8"
 
 services:
+  rabbit:                  
+    image: rabbitmq:3.13-management
+    container_name: rabbitmq
+    hostname: rabbitmq
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    extends:
+      file: common.yml
+      service: ms-deploy-network
+
+  configserver:
+    image: vicheakbank/configserver:latest
+    container_name: configserver
+    healthcheck:
+      test: "curl --fail --silent localhost:8071/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    ports:
+      - "8071:8071"
+    depends_on:
+      rabbit: 
+        condition: service_healthy
+    extends:
+      file: common.yml
+      service: ms-base
+  
+  eurekaserver:
+    image: vicheakbank/eurekaserver:latest
+    container_name: eurekaserver
+    healthcheck:
+      test: "curl --fail --silent localhost:9000/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    ports:
+      - "9000:9000"
+    environment:
+      EUREKA_INSTANCE_HOSTNAME: eurekaserver
+    extends: 
+      file: common.yml
+      service: ms-base-configserver
+
   pg-admin:
     image: dpage/pgadmin4:6
     container_name: book_service_pg_admin
@@ -10,8 +62,9 @@ services:
       - PGADMIN_LISTEN_PORT=5050
     ports:
       - "5050:5050"
-    networks:
-      - book_network
+    extends:
+      file: common.yml
+      service: ms-deploy-network
 
   book_service_db:
     image: postgres:14-alpine
@@ -22,35 +75,62 @@ services:
       - POSTGRES_DB=book_db
     ports:
       - "5438:5432"
-    networks:
-      - book_network
-    
-  configserver:
-    image: vicheak/book_configserver:latest
-    container_name: book_configserver
-    ports:
-      - "8071:8071"
-    networks:
-      - book_network
+    extends:
+      file: common.yml
+      service: ms-deploy-network
 
   book_service: 
-    image: vicheak/book_service:latest
+    image: vicheakbank/book-service:latest
     container_name: book_service 
     ports:
       - "8080:8080"
-    networks:
-      - book_network
-    depends_on:
-      - configserver
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 5s
-        max_attempts: 3
-        window: 120s
     environment:
-      SPRING_PROFILES_ACTIVE: default
-      SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
+      SPRING_DATASOURCE_USERNAME: book
+      SPRING_DATASOURCE_PASSWORD: book@123
+      SPRING_DATASOURCE_URL: jdbc:postgresql://book_service_db:5432/book_db
+    extends:
+      file: common.yml
+      service: ms-base-eurekaserver
+  
+  mongodb:
+    image: mvertes/alpine-mongo:latest
+    container_name: mongodb
+    healthcheck:
+      test: "echo 'db.stats().ok' | mongo localhost:27017/test --quiet"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    ports: 
+      - "7777:27017"
+    volumes:
+      - './data:/data/db'
+    extends:
+      file: common.yml
+      service: ms-deploy-network
+
+  borrow_service:
+    image: vicheakbank/borrow-service:latest
+    container_name: borrow_service
+    ports:
+      - "8070:8070"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/borrow_service_db
+    extends:
+      file: common.yml
+      service: ms-base-eurekaserver
+
+  gatewayserver:
+    image: vicheakbank/gatewayserver:latest
+    container_name: gatewayserver
+    ports:
+      - "8072:8072"
+    extends: 
+      file: common.yml
+      service: ms-base-eurekaserver
 
 networks:
-  book_network:
+  vicheaknetwork:

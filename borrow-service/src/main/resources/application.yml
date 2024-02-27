@@ -1,0 +1,27 @@
+server:
+  port: 8070
+
+spring:
+  application:
+    name: borrow
+
+  profiles:
+    active: prod
+
+  config:
+    import: optional:configserver:http://localhost:8071/
+
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
+
+logging:
+  level:
+    com.vicheak.borrow.borrowservice: DEBUG

@@ -1,0 +1,53 @@
+server:
+  port: 8071
+
+spring:
+  application:
+    name: configserver
+
+  profiles:
+    active: git
+
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/Vicheak/book-config-server-private
+          username: Vicheak
+          password: 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
+          default-label: main
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+encrypt:
+  key: bookservice@123
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    shutdown:
+      enabled: true
+    health:
+      probes:
+        enabled: true
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
+  info:
+    env:
+      enabled: true
+
+info:
+  app:
+    name: configserver
+    description: provide configuration service
+    version: 1.0.0
