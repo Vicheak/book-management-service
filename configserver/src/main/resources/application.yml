@@ -14,7 +14,7 @@ spring:
         git:
           uri: https://github.com/Vicheak/book-config-server-private
           username: Vicheak
-          password: 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
+          password: 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
           default-label: main
 
   rabbitmq:
@@ -42,6 +42,9 @@ management:
       enabled: true
     readinessstate:
       enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
   info:
     env:
       enabled: true
@@ -51,3 +54,9 @@ info:
     name: configserver
     description: provide configuration service
     version: 1.0.0
+
+logging:
+  level:
+    com.vicheak.book.configserver: DEBUG
+  pattern:
+    level: "%5p [${spring.application.name},%X{trace_id},%X{span_id}]"

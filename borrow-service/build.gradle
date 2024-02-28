@@ -26,6 +26,12 @@ ext {
 }
 
 dependencies {
+    //This dependency is used for open telemetry to generate correlation with tracing
+    implementation 'io.opentelemetry.javaagent:opentelemetry-javaagent:1.27.0'
+
+    //This dependency is used for micrometer to format metric data
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+
     //This dependency is used for implementation of message broker
     implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'
 

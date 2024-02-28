@@ -1,6 +1,7 @@
 package com.vicheak.book.bookservice.controller;
 
 import com.vicheak.book.bookservice.base.BaseApi;
+import com.vicheak.book.bookservice.dto.BookBorrowDetailResponseDto;
 import com.vicheak.book.bookservice.dto.BookDto;
 import com.vicheak.book.bookservice.mapper.BookMapper;
 import com.vicheak.book.bookservice.service.BookService;
@@ -39,7 +40,7 @@ public class BookController {
     public ResponseEntity<BookDto> loadBookById(@RequestHeader(name = "bookservice-correlation-id", required = false) String correlationId,
                                                 @PathVariable Integer bookId) {
 
-        log.debug("bookservice-correlation-id found in book service : {}", correlationId);
+        //log.debug("bookservice-correlation-id found in book service : {}", correlationId);
 
         return ResponseEntity.ok(bookService.loadBookById(bookId));
     }
@@ -51,14 +52,20 @@ public class BookController {
     public BaseApi<?> loadBookBorrowDetail(@RequestHeader(name = "bookservice-correlation-id", required = false) String correlationId,
                                            @PathVariable Integer bookId) {
 
-        log.debug("bookservice-correlation-id found in book service : {}", correlationId);
+        //log.debug("bookservice-correlation-id found in book service : {}", correlationId);
+        log.debug("fetchBookBorrowDetail started!");
+
+        BookBorrowDetailResponseDto bookBorrowDetailResponseDto =
+                bookService.loadBookBorrowDetail(correlationId, bookId);
+
+        log.debug("fetchBookBorrowDetail ended!");
 
         return BaseApi.builder()
                 .message("Book borrow detail successfully loaded!")
                 .status(true)
                 .code(HttpStatus.OK.value())
                 .timestamp(LocalDateTime.now())
-                .payload(bookService.loadBookBorrowDetail(correlationId, bookId))
+                .payload(bookBorrowDetailResponseDto)
                 .build();
     }
 
@@ -66,7 +73,7 @@ public class BookController {
     public BaseApi<?> loadBookBorrowDetailDefault(@RequestHeader(name = "bookservice-correlation-id", required = false) String correlationId,
                                                   @PathVariable Integer bookId, Throwable ex) {
 
-        log.debug("bookservice-correlation-id found in book service : {}", correlationId);
+        //log.debug("bookservice-correlation-id found in book service : {}", correlationId);
 
         return BaseApi.builder()
                 .message("Default Book borrow detail successfully loaded!")

@@ -31,6 +31,9 @@ management:
       enabled: true
     readinessstate:
       enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
   info:
     env:
       enabled: true
@@ -44,3 +47,5 @@ info:
 logging:
   level:
     com.vicheak.book.gatewayserver: DEBUG
+  pattern:
+    level: "%5p [${spring.application.name},%X{trace_id},%X{span_id}]"

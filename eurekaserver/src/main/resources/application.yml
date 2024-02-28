@@ -24,6 +24,9 @@ management:
       enabled: true
     readinessstate:
       enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
   info:
     env:
       enabled: true
@@ -33,3 +36,9 @@ info:
     name: eurekaserver
     description: provide service discovery and load balancing service
     version: 1.0.0
+
+logging:
+  level:
+    com.vicheak.bookservice.eurekaserver: DEBUG
+  pattern:
+    level: "%5p [${spring.application.name},%X{trace_id},%X{span_id}]"

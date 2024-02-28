@@ -16,8 +16,23 @@
 	<properties>
 		<java.version>17</java.version>
 		<spring-cloud.version>2023.0.0</spring-cloud.version>
+		<otelVersion>1.27.0</otelVersion>
 	</properties>
 	<dependencies>
+		<!-- This dependency is used for open telemetry to generate correlation with tracing -->
+		<dependency>
+			<groupId>io.opentelemetry.javaagent</groupId>
+			<artifactId>opentelemetry-javaagent</artifactId>
+			<version>${otelVersion}</version>
+			<scope>runtime</scope>
+		</dependency>
+
+		<!-- This dependency is used for micrometer to format metric data -->
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-registry-prometheus</artifactId>
+		</dependency>
+
 		<!-- This dependency is used for implementation of Edge Server / Gateway Server -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>

@@ -24,7 +24,7 @@ public class BorrowingController {
     public void createNewBorrow(@RequestHeader(name = "bookservice-correlation-id", required = false) String correlationId,
                                 @RequestBody BorrowDto borrowDto) {
 
-        log.debug("bookservice-correlation-id found in borrow service : {}", correlationId);
+        //log.debug("bookservice-correlation-id found in borrow service : {}", correlationId);
 
         borrowingService.createNewBorrow(correlationId, borrowDto);
     }
@@ -33,9 +33,16 @@ public class BorrowingController {
     public ResponseEntity<List<BorrowingDto>> loadBorrowingDetailByBookId(@RequestHeader(name = "bookservice-correlation-id", required = false) String correlationId,
                                                                           @PathVariable Integer bookId) {
 
-        log.debug("bookservice-correlation-id found in borrow service : {}", correlationId);
+        //log.debug("bookservice-correlation-id found in borrow service : {}", correlationId);
 
-        return ResponseEntity.ok(borrowingService.loadBorrowingDetailByBookId(correlationId, bookId));
+        log.debug("fetchBorrowingDetailByBookId started!");
+
+        List<BorrowingDto> borrowingDtos =
+                borrowingService.loadBorrowingDetailByBookId(correlationId, bookId);
+
+        log.debug("fetchBorrowingDetailByBookId ended!");
+
+        return ResponseEntity.ok(borrowingDtos);
     }
 
 }
